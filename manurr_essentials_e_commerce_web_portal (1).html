@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MANURR ESSENTIALS | Fashion • Grocery • Gadgets</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif']
+          },
+          colors: {
+            manurr: {
+              gold: '#D4AF37',
+              darkgold: '#B8860B',
+              slate: '#0B1120',
+              card: '#111827',
+              accent: '#E11D48',
+              emerald: '#059669'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gold-gradient {
+      background: linear-gradient(135deg, #ECC440 0%, #B8860B 100%);
+    }
+    .text-gold {
+      background: linear-gradient(135deg, #FAD961 0%, #F76B1C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased font-sans flex flex-col min-h-screen">
+
+  <!-- MAIN NAVIGATION BAR (Tata CLiQ Luxury + Amazon Fast Delivery) -->
+  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-slate-800 shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3 sm:gap-6">
+      
+      <!-- Brand Logo -->
+      <a href="#" onclick="filterCategory('All')" class="flex flex-col flex-shrink-0 group">
+        <span class="text-2xl sm:text-3xl font-black tracking-widest text-white group-hover:text-amber-400 transition font-display">
+          MANURR
+        </span>
+        <span class="text-[9px] uppercase tracking-[0.32em] text-amber-400 font-extrabold -mt-1">
+          ESSENTIALS
+        </span>
+      </a>
+
+      <!-- Location Selector -->
+      <button onclick="openAddressModal()" class="hidden md:flex items-center gap-2 text-left px-3 py-1.5 rounded-xl border border-slate-700/80 hover:border-amber-400 bg-slate-800/50 transition flex-shrink-0">
+        <div class="w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+          <i class="fa-solid fa-location-dot text-xs"></i>
+        </div>
+        <div class="leading-tight text-xs">
+          <span class="text-[10px] text-slate-400 block" id="headerDeliverToLabel">Deliver to</span>
+          <span class="font-bold text-white tracking-tight" id="headerLocation">Set Location</span>
+        </div>
+      </button>
+
+      <!-- Search Bar -->
+      <div class="flex-1 max-w-xl relative">
+        <div class="relative w-full flex items-center">
+          <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search snacks, clothes, perfumes, body wash, gadgets..." 
+            class="w-full bg-slate-800/90 text-white placeholder-slate-400 text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400">
+          <button onclick="applyFilters()" class="absolute right-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-lg text-xs font-bold transition">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <!-- Sign In -->
+        <button onclick="openAuthModal()" class="flex items-center gap-2 text-left px-3 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition">
+          <i class="fa-regular fa-circle-user text-amber-400 text-base"></i>
+          <span class="text-xs font-semibold text-white hidden sm:inline" id="userButtonText">Sign In</span>
+        </button>
+
+        <!-- Cart Button -->
+        <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition shadow-lg">
+          <i class="fa-solid fa-bag-shopping text-sm"></i>
+          <span class="text-xs hidden sm:inline">Cart</span>
+          <span id="cartCountBadge" class="bg-slate-950 text-amber-400 text-[10px] font-black px-1.5 py-0.5 rounded-full">
+            0
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- QUICK CATEGORY TABS -->
+    <nav class="bg-black/60 border-t border-slate-800/80 px-4 py-2 overflow-x-auto custom-scrollbar">
+      <div class="max-w-7xl mx-auto flex items-center space-x-3 sm:space-x-4 text-xs whitespace-nowrap">
+        <button onclick="filterCategory('All')" class="category-pill active-pill px-3 py-1 rounded-full font-bold bg-amber-500 text-slate-950 transition">
+          All Essentials
+        </button>
+        <button onclick="filterCategory('Clothes & Fashion')" class="category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          Clothes & Fashion
+        </button>
+        <button onclick="filterCategory('Perfumes & Deos')" class="category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          Perfumes & Deos
+        </button>
+        <button onclick="filterCategory('Lotions & Creams')" class="category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          Lotions & Creams
+        </button>
+        <button onclick="filterCategory('Soaps & Body Wash')" class="category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          Soaps & Body Wash
+        </button>
+        <button onclick="filterCategory('Snacks & Munchies')" class="category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          Snacks & Munchies
+        </button>
+        <button onclick="filterCategory('Beverages')" class="category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          Beverages
+        </button>
+        <button onclick="filterCategory('Gadgets')" class="category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition">
+          Gadgets
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN BODY -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+
+    <!-- HERO PROMOTIONAL BANNER -->
+    <section class="mb-8 rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/60 border border-slate-800 relative p-6 sm:p-10">
+      <div class="max-w-2xl relative z-10">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-white leading-tight mb-3">
+          Daily Essentials, Snacks & <br><span class="text-gold">Everyday Fashion.</span>
+        </h1>
+        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6 font-normal">
+          Curated clothing drops, premium perfumes, body care lotions, artisanal soaps, and your favorite snacks & beverages delivered directly to your doorstep.
+        </p>
+
+        <!-- 3 TRUST BADGES -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <div class="flex items-center gap-3 p-3 bg-slate-800/80 border border-slate-700 rounded-2xl">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 text-sm">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Cashfree Secured</h4>
+              <p class="text-[10px] text-slate-400">Instant UPI & Cards</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 p-3 bg-slate-800/80 border border-slate-700 rounded-2xl">
+            <div class="w-9 h-9 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400 text-sm">
+              <i class="fa-solid fa-box-archive"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Tamper-Proof Pack</h4>
+              <p class="text-[10px] text-slate-400">Hygiene-sealed delivery</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 p-3 bg-slate-800/80 border border-slate-700 rounded-2xl">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-sm">
+              <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Doorstep Dispatch</h4>
+              <p class="text-[10px] text-slate-400">Express shipping</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION TITLE & FILTER CONTROLS -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <h2 class="text-xl font-bold font-display text-white" id="currentSectionTitle">Trending Essentials</h2>
+        <span id="productCount" class="text-xs bg-slate-800 text-amber-400 border border-slate-700 font-bold px-2.5 py-0.5 rounded-full">
+          0 Items
+        </span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Brand Filter: All vs MANURR Originals -->
+        <button onclick="toggleOwnBrandFilter()" id="btnOwnBrandFilter" class="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:border-amber-400 text-xs font-semibold text-slate-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-crown text-amber-400"></i>
+          <span>MANURR Originals Only</span>
+        </button>
+
+        <!-- Merchant Studio Shortcut -->
+        <button onclick="openProductModal()" class="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500 hover:text-slate-950 text-xs font-bold transition flex items-center gap-1">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span>Add Product</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PRODUCTS GRID -->
+    <section id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      <!-- Dynamic Product Cards -->
+    </section>
+
+    <!-- EMPTY STATE -->
+    <div id="noProductsFound" class="hidden py-16 text-center">
+      <div class="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 text-slate-500 mx-auto flex items-center justify-center text-2xl mb-3">
+        <i class="fa-solid fa-box-open"></i>
+      </div>
+      <h3 class="text-base font-bold text-white mb-1">No matching essentials found</h3>
+      <p class="text-xs text-slate-400 mb-4">Try checking your search keyword or selecting a different category.</p>
+      <button onclick="filterCategory('All')" class="px-4 py-2 bg-amber-500 text-slate-950 text-xs font-bold rounded-xl hover:bg-amber-400 transition">
+        View All Essentials
+      </button>
+    </div>
+
+  </main>
+
+  <!-- CART DRAWER -->
+  <aside id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none transition-opacity duration-300 opacity-0">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm pointer-events-auto" onclick="toggleCartDrawer(false)"></div>
+    <div class="absolute inset-y-0 right-0 max-w-full flex pl-10 pointer-events-auto">
+      <div class="w-screen max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl flex flex-col">
+        
+        <!-- Cart Drawer Header -->
+        <div class="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400">
+              <i class="fa-solid fa-bag-shopping"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">My Cart</h3>
+              <p class="text-[11px] text-slate-400" id="cartDrawerCount">0 items</p>
+            </div>
+          </div>
+          <button onclick="toggleCartDrawer(false)" class="text-slate-400 hover:text-white transition">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 custom-scrollbar">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="bg-slate-950 border-t border-slate-800 p-6 space-y-4">
+          <div class="flex justify-between items-center text-xs text-slate-400">
+            <span>Delivery Fee</span>
+            <span class="text-emerald-400 font-bold uppercase tracking-wider text-[11px]">FREE (Pan-India)</span>
+          </div>
+
+          <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+            <span class="text-sm font-medium text-slate-300">Total Amount:</span>
+            <span class="text-2xl font-black text-amber-400" id="cartTotal">₹0</span>
+          </div>
+
+          <button onclick="proceedToPay()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl transition shadow-xl flex items-center justify-center gap-2">
+            <i class="fa-solid fa-lock text-sm"></i>
+            <span>Proceed to Pay</span>
+          </button>
+
+          <div class="text-[10px] text-center text-slate-400 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-shield-check text-emerald-400"></i>
+            <span>Cashfree 256-Bit SSL Encrypted Escrow</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- AUTHENTICATION MODAL (MOBILE OR EMAIL - ZERO OTP) -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-800">
+      <div class="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+        <h3 class="text-sm font-bold text-white">Sign In to MANURR</h3>
+        <button onclick="closeModal('authModal')" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="authForm" onsubmit="handleAuthSubmit(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+          <input type="text" id="authName" required placeholder="e.g. Vikram Singhania"
+            class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-xs focus:outline-none focus:border-amber-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Number OR Email</label>
+          <input type="text" id="authContact" required placeholder="8051575103 or help@manurrindia.com"
+            class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-xs focus:outline-none focus:border-amber-400 font-mono">
+          <p class="text-[10px] text-slate-400 mt-1">Instant login without OTP delays.</p>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs flex items-center justify-center gap-1.5">
+          <span>Sign In Instantly</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADDRESS & LOCATION MODAL -->
+  <div id="addressModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-800">
+      <div class="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-location-dot text-amber-400"></i>
+          <h3 class="text-sm font-bold text-white">Change Delivery Location</h3>
+        </div>
+        <button onclick="closeModal('addressModal')" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="addressForm" onsubmit="handleAddressSubmit(event)" class="p-6 space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Full Name</label>
+          <input type="text" id="addrRecipient" required placeholder="Full Name" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Contact Phone</label>
+          <input type="tel" id="addrPhone" required placeholder="8051575103" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">House / Flat / Area</label>
+          <input type="text" id="addrStreet" required placeholder="Flat 402, Royal Residency" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">City</label>
+            <input type="text" id="addrCity" required placeholder="e.g. New Delhi" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">6-Digit Pincode</label>
+            <input type="text" id="addrPincode" required maxlength="6" placeholder="110001" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white font-mono">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full mt-2 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition text-xs">
+          Save Location
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SELLER / OWNER STUDIO (ADD & UPDATE PRODUCT) -->
+  <div id="productModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-800">
+      <div class="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-boxes-stacked text-amber-400"></i>
+          <h3 class="text-sm font-bold text-white" id="productModalTitle">Owner Studio: List / Update Product</h3>
+        </div>
+        <button onclick="closeModal('productModal')" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="productForm" onsubmit="handleProductSubmit(event)" class="p-6 space-y-3 max-h-[80vh] overflow-y-auto custom-scrollbar">
+        <input type="hidden" id="editProductId" value="">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Product Title</label>
+          <input type="text" id="pTitle" required placeholder="e.g. MANURR Luxury Body Wash (300ml)" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Brand Name</label>
+            <input type="text" id="pBrand" required placeholder="MANURR ESSENTIALS or Cadbury, Nivea..." class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Store Category</label>
+            <select id="pCategory" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+              <option value="Clothes & Fashion">Clothes & Fashion</option>
+              <option value="Perfumes & Deos">Perfumes & Deos</option>
+              <option value="Lotions & Creams">Lotions & Creams</option>
+              <option value="Soaps & Body Wash">Soaps & Body Wash</option>
+              <option value="Snacks & Munchies">Snacks & Munchies</option>
+              <option value="Beverages">Beverages</option>
+              <option value="Gadgets">Gadgets</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Selling Price (₹)</label>
+            <input type="number" id="pPrice" required min="1" placeholder="499" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Original MRP (₹)</label>
+            <input type="number" id="pOriginalPrice" required min="1" placeholder="799" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Image URL</label>
+          <input type="url" id="pImage" required placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Description / Ingredients / Highlights</label>
+          <textarea id="pDesc" rows="2" placeholder="Key details, weight, scent notes..." class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white"></textarea>
+        </div>
+
+        <div class="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+          <input type="checkbox" id="pIsOwnBrand" class="rounded text-amber-500 focus:ring-amber-400 w-4 h-4 bg-slate-800 border-slate-700">
+          <label for="pIsOwnBrand" class="text-xs font-semibold text-amber-300">
+            Designate as <strong class="text-white">MANURR Own Brand</strong> (Crown Badge)
+          </label>
+        </div>
+
+        <div class="pt-2 flex gap-3">
+          <button type="submit" class="flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition">
+            Save Product
+          </button>
+          <button type="button" onclick="closeModal('productModal')" class="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CASHFREE PAYMENT GATEWAY MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-800">
+      <div class="bg-slate-950 px-6 py-4 flex items-center justify-between border-b border-amber-500/20">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black text-xs">
+            CF
+          </div>
+          <div>
+            <h3 class="font-bold text-xs uppercase tracking-wider text-white">Cashfree Payments PG</h3>
+            <p class="text-[10px] text-slate-400 font-mono">Order ID: <span id="cfOrderId" class="text-amber-400">CF_92812</span></p>
+          </div>
+        </div>
+        <button onclick="closeModal('checkoutModal')" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+          <div>
+            <span class="text-[11px] text-slate-400 block">Total Payable</span>
+            <span class="text-2xl font-black text-amber-400" id="checkoutAmount">₹0</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 block">Merchant</span>
+            <span class="text-xs font-bold text-white">MANURR ESSENTIALS</span>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-300">Select Payment Mode</label>
+
+          <label class="flex items-center justify-between p-3 border border-slate-700 bg-slate-800/60 rounded-xl cursor-pointer hover:border-amber-400 transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="pgMethod" value="upi" checked class="text-amber-500">
+              <i class="fa-solid fa-mobile-screen-button text-amber-400 text-sm"></i>
+              <span class="text-xs font-semibold text-white">Instant UPI (GPay / PhonePe / Paytm / QR)</span>
+            </div>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded">Fastest</span>
+          </label>
+
+          <label class="flex items-center justify-between p-3 border border-slate-700 bg-slate-800/60 rounded-xl cursor-pointer hover:border-amber-400 transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="pgMethod" value="card" class="text-amber-500">
+              <i class="fa-solid fa-credit-card text-sky-400 text-sm"></i>
+              <span class="text-xs font-semibold text-white">Credit / Debit Card (Visa, RuPay, MC)</span>
+            </div>
+            <i class="fa-brands fa-cc-visa text-slate-400 text-base"></i>
+          </label>
+
+          <label class="flex items-center justify-between p-3 border border-slate-700 bg-slate-800/60 rounded-xl cursor-pointer hover:border-amber-400 transition">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="pgMethod" value="netbanking" class="text-amber-500">
+              <i class="fa-solid fa-building-columns text-purple-400 text-sm"></i>
+              <span class="text-xs font-semibold text-white">Net Banking (All Indian Banks)</span>
+            </div>
+          </label>
+        </div>
+
+        <button onclick="executePayment()" id="btnConfirmPay" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black rounded-xl transition shadow flex items-center justify-center gap-2">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Pay via Cashfree API</span>
+        </button>
+
+        <p class="text-[10px] text-center text-slate-400">
+          Support: <a href="mailto:help@manurrindia.com" class="text-amber-400">help@manurrindia.com</a> | +91 8051575103
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS RECEIPT MODAL -->
+  <div id="orderSuccessModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden border border-slate-800 text-center p-6 space-y-4">
+      <div class="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center text-2xl">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <div>
+        <h3 class="text-lg font-bold text-white font-display">Order Dispatched!</h3>
+        <p class="text-xs text-slate-400 mt-1">Thank you for ordering with MANURR ESSENTIALS.</p>
+      </div>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-left text-xs space-y-2">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Transaction ID:</span>
+          <span class="font-mono text-amber-400" id="receiptTxn">CF_TXN_0000</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Amount Paid:</span>
+          <span class="font-bold text-white" id="receiptAmount">₹0</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Delivery To:</span>
+          <span class="font-medium text-slate-200 text-right" id="receiptLoc">New Delhi</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Status:</span>
+          <span class="text-emerald-400 font-bold">PAID (Cashfree Verified)</span>
+        </div>
+      </div>
+
+      <button onclick="closeModal('orderSuccessModal')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs transition">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-black text-slate-400 text-xs border-t border-slate-800 mt-16">
+    <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Brand & Mission -->
+      <div>
+        <div class="flex flex-col mb-3">
+          <span class="text-2xl font-black tracking-widest text-white font-display">MANURR</span>
+          <span class="text-[9px] uppercase tracking-[0.32em] text-amber-400 font-extrabold -mt-1">ESSENTIALS</span>
+        </div>
+        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+          Delivering curated everyday luxury and essentials directly to your home.
+        </p>
+        <div class="flex items-center gap-2 text-amber-400 text-sm">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span class="text-xs font-semibold text-slate-300">100% Cashfree Escrow Protected</span>
+        </div>
+      </div>
+
+      <!-- Store Categories -->
+      <div>
+        <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-xs">Store Categories</h4>
+        <ul class="space-y-2 text-slate-400">
+          <li><button onclick="filterCategory('Clothes & Fashion')" class="hover:text-amber-400 transition">Clothes & Fashion</button></li>
+          <li><button onclick="filterCategory('Perfumes & Deos')" class="hover:text-amber-400 transition">Perfumes & Deos</button></li>
+          <li><button onclick="filterCategory('Lotions & Creams')" class="hover:text-amber-400 transition">Lotions & Creams</button></li>
+          <li><button onclick="filterCategory('Soaps & Body Wash')" class="hover:text-amber-400 transition">Soaps & Body Wash</button></li>
+          <li><button onclick="filterCategory('Snacks & Munchies')" class="hover:text-amber-400 transition">Snacks & Munchies</button></li>
+          <li><button onclick="filterCategory('Beverages')" class="hover:text-amber-400 transition">Beverages</button></li>
+          <li><button onclick="filterCategory('Gadgets')" class="hover:text-amber-400 transition">Gadgets</button></li>
+        </ul>
+      </div>
+
+      <!-- Customer Care -->
+      <div>
+        <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-xs">Customer Care</h4>
+        <ul class="space-y-2 text-slate-400">
+          <li>
+            <a href="tel:8051575103" class="hover:text-amber-400 transition flex items-center gap-2">
+              <i class="fa-solid fa-phone text-amber-400"></i>
+              <span>Order Phone: +91 8051575103</span>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:help@manurrindia.com" class="hover:text-amber-400 transition flex items-center gap-2">
+              <i class="fa-regular fa-envelope text-amber-400"></i>
+              <span>Helpdesk: help@manurrindia.com</span>
+            </a>
+          </li>
+          <li>
+            <button onclick="openAddressModal()" class="hover:text-amber-400 transition flex items-center gap-2">
+              <i class="fa-solid fa-location-dot text-amber-400"></i>
+              <span>Change Delivery Location</span>
+            </button>
+          </li>
+          <li>
+            <button onclick="openProductModal()" class="hover:text-amber-400 transition flex items-center gap-2">
+              <i class="fa-solid fa-user-gear text-amber-400"></i>
+              <span>Owner Login</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Guarantee & Payment Methods -->
+      <div>
+        <h4 class="text-white font-bold mb-3 uppercase tracking-wider text-xs">Payment & Dispatch</h4>
+        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+          All payments are powered by Cashfree with instant UPI and card settlement. Every parcel is tamper-proof sealed for hygiene.
+        </p>
+        <div class="flex items-center gap-3 text-2xl text-slate-400">
+          <i class="fa-brands fa-google-pay hover:text-white"></i>
+          <i class="fa-brands fa-cc-visa hover:text-white"></i>
+          <i class="fa-brands fa-cc-mastercard hover:text-white"></i>
+          <i class="fa-solid fa-building-columns hover:text-white"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Copyright Strip -->
+    <div class="border-t border-slate-900 py-4 text-center text-slate-500 text-[11px]">
+      © 2026 MANURR ESSENTIALS (MANURR INDIA Pvt. Ltd.). All rights reserved.
+    </div>
+  </footer>
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-slate-900 text-white border border-slate-700 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-xs max-w-sm">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-amber-400 text-base"></i>
+    <span id="toastMessage" class="font-medium">Notification</span>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // PRE-POPULATED STORE CATALOG (Matching the 7 Specific Categories)
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "prod_1",
+        title: "MANURR Heavyweight Oversized Cotton Drop-Shoulder Tee",
+        brand: "MANURR ESSENTIALS",
+        category: "Clothes & Fashion",
+        price: 999,
+        originalPrice: 1999,
+        isOwnBrand: true,
+        image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=700&q=80",
+        rating: 4.9,
+        reviewsCount: 142,
+        description: "240 GSM pre-shrunk French Terry cotton with relaxed streetwear drape and ribbed collar."
+      },
+      {
+        id: "prod_2",
+        title: "MANURR Oud & Dark Amber Extrait De Parfum (50ml)",
+        brand: "MANURR ESSENTIALS",
+        category: "Perfumes & Deos",
+        price: 1499,
+        originalPrice: 2799,
+        isOwnBrand: true,
+        image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=700&q=80",
+        rating: 4.9,
+        reviewsCount: 98,
+        description: "24-hour long-lasting artisanal perfume blend with Cambodian agarwood, saffron, and velvety amber."
+      },
+      {
+        id: "prod_3",
+        title: "Nivea Nourishing Cocoa Butter Deep Moisture Body Lotion (400ml)",
+        brand: "Nivea",
+        category: "Lotions & Creams",
+        price: 385,
+        originalPrice: 525,
+        isOwnBrand: false,
+        image: "https://images.unsplash.com/photo-1608248597359-009f4ef931db?auto=format&fit=crop&w=700&q=80",
+        rating: 4.8,
+        reviewsCount: 420,
+        description: "Enriched with Deep Moisture Serum and pure Cocoa Butter for 48-hour smooth, radiant skin."
+      },
+      {
+        id: "prod_4",
+        title: "MANURR Raw Shea & Charcoal Handcrafted Artisanal Soap Bar (Pack of 3)",
+        brand: "MANURR ESSENTIALS",
+        category: "Soaps & Body Wash",
+        price: 449,
+        originalPrice: 799,
+        isOwnBrand: true,
+        image: "https://images.unsplash.com/photo-1607006314374-e81881515bb5?auto=format&fit=crop&w=700&q=80",
+        rating: 4.9,
+        reviewsCount: 78,
+        description: "Cold-pressed organic oils infused with activated bamboo charcoal for deep detoxification and smooth lather."
+      },
+      {
+        id: "prod_5",
+        title: "Gourmet Roasted Salted Cashews & Almonds Crunch Mix (250g)",
+        brand: "MANURR ESSENTIALS",
+        category: "Snacks & Munchies",
+        price: 349,
+        originalPrice: 499,
+        isOwnBrand: true,
+        image: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=700&q=80",
+        rating: 4.7,
+        reviewsCount: 165,
+        description: "Slow-roasted jumbo nuts seasoned with Himalayan pink salt. Tamper-proof nitrogen flushed pack."
+      },
+      {
+        id: "prod_6",
+        title: "Raw Cold Pressed Valencia Orange Juice (Bottle of 1L)",
+        brand: "Raw Pressery",
+        category: "Beverages",
+        price: 180,
+        originalPrice: 220,
+        isOwnBrand: false,
+        image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=700&q=80",
+        rating: 4.8,
+        reviewsCount: 210,
+        description: "100% pure Valencia oranges with zero added sugar, no preservatives, and pure natural Vitamin C."
+      },
+      {
+        id: "prod_7",
+        title: "Sony WH-1000XM5 Wireless Active Noise Cancelling Headphones",
+        brand: "Sony",
+        category: "Gadgets",
+        price: 26990,
+        originalPrice: 34990,
+        isOwnBrand: false,
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=700&q=80",
+        rating: 4.9,
+        reviewsCount: 890,
+        description: "Industry-leading noise cancellation with auto NC optimizer, 30-hour battery life, and crystal clear calling."
+      },
+      {
+        id: "prod_8",
+        title: "MANURR Relaxed Fit Japanese Selvedge Denim Jeans",
+        brand: "MANURR ESSENTIALS",
+        category: "Clothes & Fashion",
+        price: 2499,
+        originalPrice: 4999,
+        isOwnBrand: true,
+        image: "https://images.unsplash.com/photo-1542272604-780c96856592?auto=format&fit=crop&w=700&q=80",
+        rating: 4.8,
+        reviewsCount: 54,
+        description: "Authentic 13.5oz shuttle-loom selvedge denim designed for clean taper and durable daily wear."
+      }
+    ];
+
+    // APPLICATION STATE
+    let products = [];
+    let cart = [];
+    let selectedCategory = "All";
+    let ownBrandOnly = false;
+    let searchQuery = "";
+    let currentUser = null;
+    let currentAddress = {
+      recipient: "Customer",
+      phone: "8051575103",
+      street: "Connaught Place",
+      city: "New Delhi",
+      pincode: "110001"
+    };
+
+    // INITIALIZATION
+    function initApp() {
+      try {
+        const storedProducts = localStorage.getItem("manurr_products");
+        if (storedProducts) {
+          products = JSON.parse(storedProducts);
+        } else {
+          products = [...DEFAULT_PRODUCTS];
+          localStorage.setItem("manurr_products", JSON.stringify(products));
+        }
+      } catch (e) {
+        products = [...DEFAULT_PRODUCTS];
+      }
+
+      // Check User
+      try {
+        const user = localStorage.getItem("manurr_user");
+        if (user) {
+          currentUser = JSON.parse(user);
+          updateUserDisplay();
+        }
+      } catch (e) {}
+
+      // Check Location
+      try {
+        const addr = localStorage.getItem("manurr_address");
+        if (addr) {
+          currentAddress = JSON.parse(addr);
+        }
+      } catch (e) {}
+      updateAddressDisplay();
+
+      renderProducts();
+      updateCartDisplay();
+    }
+
+    // RENDER PRODUCTS
+    function renderProducts() {
+      const grid = document.getElementById("productsGrid");
+      const emptyState = document.getElementById("noProductsFound");
+      const countBadge = document.getElementById("productCount");
+      const sectionTitle = document.getElementById("currentSectionTitle");
+
+      if (!grid) return;
+
+      const q = searchQuery.toLowerCase().trim();
+
+      const filtered = products.filter(p => {
+        const matchCategory = selectedCategory === "All" || p.category === selectedCategory;
+        const matchOwn = !ownBrandOnly || p.isOwnBrand === true;
+        const matchSearch = !q || 
+          p.title.toLowerCase().includes(q) || 
+          p.brand.toLowerCase().includes(q) || 
+          p.category.toLowerCase().includes(q);
+
+        return matchCategory && matchOwn && matchSearch;
+      });
+
+      if (sectionTitle) {
+        sectionTitle.textContent = selectedCategory === "All" ? "Trending Essentials" : selectedCategory;
+      }
+      if (countBadge) {
+        countBadge.textContent = `${filtered.length} Items`;
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+
+      grid.innerHTML = filtered.map(item => {
+        const discount = Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100);
+
+        return `
+          <div class="bg-slate-900 rounded-3xl overflow-hidden border ${item.isOwnBrand ? 'border-amber-500/40' : 'border-slate-800'} hover:border-amber-400 transition-all duration-300 flex flex-col group relative shadow-lg">
+            
+            <!-- Image Area -->
+            <div class="relative bg-slate-950 h-48 sm:h-60 overflow-hidden">
+              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x600/0b1120/d4af37?text=MANURR+ESSENTIALS'">
+              
+              <!-- Badges -->
+              <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start">
+                ${item.isOwnBrand ? `
+                  <span class="inline-flex items-center gap-1 bg-black/90 text-amber-400 border border-amber-400/80 text-[9px] font-black uppercase px-2 py-0.5 rounded-full shadow">
+                    <i class="fa-solid fa-crown text-[8px]"></i> MANURR
+                  </span>
+                ` : `
+                  <span class="bg-slate-900/90 text-white text-[9px] font-bold uppercase px-2 py-0.5 rounded-full">
+                    ${item.brand}
+                  </span>
+                `}
+                <span class="bg-rose-600 text-white font-black text-[9px] px-1.5 py-0.5 rounded-full">
+                  ${discount}% OFF
+                </span>
+              </div>
+
+              <!-- Quick Edit Icon for Owner -->
+              <button onclick="editProduct('${item.id}')" title="Edit details" class="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-slate-900/80 hover:bg-amber-500 hover:text-slate-950 text-slate-300 flex items-center justify-center text-[11px] transition">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between text-[10px] text-slate-400 mb-1">
+                  <span class="text-amber-400 font-semibold uppercase tracking-wider">${item.category}</span>
+                  <span class="flex items-center gap-1 text-amber-400">
+                    <i class="fa-solid fa-star text-[9px]"></i> ${item.rating}
+                  </span>
+                </div>
+
+                <h3 class="text-xs sm:text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-amber-400 transition">
+                  ${item.title}
+                </h3>
+              </div>
+
+              <!-- Price & Buy Action -->
+              <div class="pt-3 border-t border-slate-800/80 mt-3">
+                <div class="flex items-baseline gap-2 mb-2.5">
+                  <span class="text-base sm:text-lg font-black text-amber-400">₹${item.price.toLocaleString('en-IN')}</span>
+                  <span class="text-xs text-slate-500 line-through">₹${item.originalPrice.toLocaleString('en-IN')}</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick="addToCart('${item.id}')" class="py-2 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-bag-shopping text-[10px] text-amber-400"></i>
+                    <span>Add</span>
+                  </button>
+                  <button onclick="quickBuy('${item.id}')" class="py-2 px-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition flex items-center justify-center">
+                    <span>Pay</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // FILTER HANDLERS
+    function filterCategory(cat) {
+      selectedCategory = cat;
+
+      // Update pills
+      document.querySelectorAll(".category-pill").forEach(pill => {
+        if (pill.textContent.trim() === (cat === "All" ? "All Essentials" : cat)) {
+          pill.className = "category-pill px-3 py-1 rounded-full font-bold bg-amber-500 text-slate-950 transition";
+        } else {
+          pill.className = "category-pill px-3 py-1 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition";
+        }
+      });
+
+      renderProducts();
+    }
+
+    function toggleOwnBrandFilter() {
+      ownBrandOnly = !ownBrandOnly;
+      const btn = document.getElementById("btnOwnBrandFilter");
+      if (ownBrandOnly) {
+        btn.className = "px-3 py-1.5 rounded-xl border border-amber-400 bg-amber-500 text-xs font-bold text-slate-950 transition flex items-center gap-1.5";
+      } else {
+        btn.className = "px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:border-amber-400 text-xs font-semibold text-slate-300 transition flex items-center gap-1.5";
+      }
+      renderProducts();
+    }
+
+    function applyFilters() {
+      searchQuery = document.getElementById("searchInput").value;
+      renderProducts();
+    }
+
+    // CART OPERATIONS
+    function addToCart(productId) {
+      const p = products.find(i => i.id === productId);
+      if (!p) return;
+
+      const existing = cart.find(c => c.id === productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ ...p, quantity: 1 });
+      }
+
+      updateCartDisplay();
+      showToast(`${p.title.substring(0, 22)}... added!`, "success");
+    }
+
+    function quickBuy(productId) {
+      addToCart(productId);
+      toggleCartDrawer(true);
+    }
+
+    function updateCartItemQty(productId, delta) {
+      const item = cart.find(c => c.id === productId);
+      if (!item) return;
+
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter(c => c.id !== productId);
+      }
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const container = document.getElementById("cartItemsContainer");
+      const badge = document.getElementById("cartCountBadge");
+      const drawerCount = document.getElementById("cartDrawerCount");
+      const totalElem = document.getElementById("cartTotal");
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const totalVal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      if (badge) badge.textContent = totalItems;
+      if (drawerCount) drawerCount.textContent = `${totalItems} items`;
+      if (totalElem) totalElem.textContent = `₹${totalVal.toLocaleString('en-IN')}`;
+
+      if (!container) return;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="py-16 text-center text-slate-500 space-y-2">
+            <i class="fa-solid fa-basket-shopping text-4xl text-slate-700 mb-2 block"></i>
+            <p class="text-sm font-bold text-slate-300">My Cart is Empty</p>
+            <p class="text-xs">Add snacks, fashion items, and essentials.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = cart.map(item => `
+        <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+          <img src="${item.image}" alt="${item.title}" class="w-14 h-14 object-cover rounded-xl border border-slate-800">
+          <div class="flex-1 min-w-0">
+            <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+            <span class="text-[10px] text-amber-400 font-semibold block">${item.brand}</span>
+            <span class="text-xs font-black text-white">₹${item.price.toLocaleString('en-IN')}</span>
+          </div>
+          <div class="flex items-center border border-slate-700 rounded-xl bg-slate-900 overflow-hidden">
+            <button onclick="updateCartItemQty('${item.id}', -1)" class="px-2.5 py-1 text-slate-400 hover:text-white text-xs font-bold">-</button>
+            <span class="px-2 text-xs font-bold text-amber-400">${item.quantity}</span>
+            <button onclick="updateCartItemQty('${item.id}', 1)" class="px-2.5 py-1 text-slate-400 hover:text-white text-xs font-bold">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleCartDrawer(open) {
+      const drawer = document.getElementById("cartDrawer");
+      if (!drawer) return;
+      if (open) {
+        drawer.classList.remove("opacity-0", "pointer-events-none");
+        drawer.classList.add("opacity-100");
+      } else {
+        drawer.classList.add("opacity-0", "pointer-events-none");
+        drawer.classList.remove("opacity-100");
+      }
+    }
+
+    // SIGN IN (MOBILE OR EMAIL - ZERO OTP)
+    function openAuthModal() {
+      openModal("authModal");
+    }
+
+    function handleAuthSubmit(e) {
+      if (e) e.preventDefault();
+      const name = document.getElementById("authName").value.trim();
+      const contact = document.getElementById("authContact").value.trim();
+
+      if (!name || !contact) return;
+
+      currentUser = { name, contact };
+      try {
+        localStorage.setItem("manurr_user", JSON.stringify(currentUser));
+      } catch (err) {}
+
+      updateUserDisplay();
+      closeModal("authModal");
+      showToast(`Welcome, ${name}! Signed in.`, "success");
+    }
+
+    function updateUserDisplay() {
+      if (!currentUser) return;
+      const btnText = document.getElementById("userButtonText");
+      if (btnText) btnText.textContent = currentUser.name.split(" ")[0];
+    }
+
+    // LOCATION / ADDRESS
+    function openAddressModal() {
+      document.getElementById("addrRecipient").value = currentAddress.recipient || "";
+      document.getElementById("addrPhone").value = currentAddress.phone || "";
+      document.getElementById("addrStreet").value = currentAddress.street || "";
+      document.getElementById("addrCity").value = currentAddress.city || "";
+      document.getElementById("addrPincode").value = currentAddress.pincode || "";
+      openModal("addressModal");
+    }
+
+    function handleAddressSubmit(e) {
+      if (e) e.preventDefault();
+      const recipient = document.getElementById("addrRecipient").value.trim();
+      const phone = document.getElementById("addrPhone").value.trim();
+      const street = document.getElementById("addrStreet").value.trim();
+      const city = document.getElementById("addrCity").value.trim();
+      const pincode = document.getElementById("addrPincode").value.trim();
+
+      if (!recipient || !street || !city || pincode.length !== 6) {
+        showToast("Please provide complete address with 6-digit pincode.", "error");
+        return;
+      }
+
+      currentAddress = { recipient, phone, street, city, pincode };
+      try {
+        localStorage.setItem("manurr_address", JSON.stringify(currentAddress));
+      } catch (err) {}
+
+      updateAddressDisplay();
+      closeModal("addressModal");
+      showToast("Location updated successfully!", "success");
+    }
+
+    function updateAddressDisplay() {
+      const locLabel = document.getElementById("headerLocation");
+      if (locLabel) {
+        locLabel.textContent = `${currentAddress.city} - ${currentAddress.pincode}`;
+      }
+    }
+
+    // OWNER PRODUCT STUDIO
+    function openProductModal() {
+      document.getElementById("editProductId").value = "";
+      document.getElementById("productModalTitle").textContent = "Owner Studio: List New Product";
+      document.getElementById("productForm").reset();
+      openModal("productModal");
+    }
+
+    function editProduct(productId) {
+      const item = products.find(p => p.id === productId);
+      if (!item) return;
+
+      document.getElementById("editProductId").value = item.id;
+      document.getElementById("productModalTitle").textContent = "Owner Studio: Update Product Details";
+      document.getElementById("pTitle").value = item.title;
+      document.getElementById("pBrand").value = item.brand;
+      document.getElementById("pCategory").value = item.category;
+      document.getElementById("pPrice").value = item.price;
+      document.getElementById("pOriginalPrice").value = item.originalPrice;
+      document.getElementById("pImage").value = item.image;
+      document.getElementById("pDesc").value = item.description || "";
+      document.getElementById("pIsOwnBrand").checked = item.isOwnBrand || false;
+
+      openModal("productModal");
+    }
+
+    function handleProductSubmit(e) {
+      if (e) e.preventDefault();
+      const editId = document.getElementById("editProductId").value;
+      const title = document.getElementById("pTitle").value.trim();
+      const brand = document.getElementById("pBrand").value.trim();
+      const category = document.getElementById("pCategory").value;
+      const price = parseFloat(document.getElementById("pPrice").value);
+      const originalPrice = parseFloat(document.getElementById("pOriginalPrice").value);
+      const image = document.getElementById("pImage").value.trim();
+      const description = document.getElementById("pDesc").value.trim();
+      const isOwnBrand = document.getElementById("pIsOwnBrand").checked;
+
+      if (!title || !brand || isNaN(price) || isNaN(originalPrice) || !image) {
+        showToast("Please fill all required product fields.", "error");
+        return;
+      }
+
+      if (editId) {
+        const idx = products.findIndex(p => p.id === editId);
+        if (idx !== -1) {
+          products[idx] = { ...products[idx], title, brand, category, price, originalPrice, image, description, isOwnBrand };
+          showToast("Product details updated!", "success");
+        }
+      } else {
+        const newProduct = {
+          id: `prod_${Date.now()}`,
+          title, brand, category, price, originalPrice, image, description, isOwnBrand,
+          rating: 5.0,
+          reviewsCount: 1
+        };
+        products.unshift(newProduct);
+        showToast("New product published live!", "success");
+      }
+
+      try {
+        localStorage.setItem("manurr_products", JSON.stringify(products));
+      } catch (err) {}
+
+      renderProducts();
+      closeModal("productModal");
+    }
+
+    // CASHFREE CHECKOUT
+    function proceedToPay() {
+      if (cart.length === 0) {
+        showToast("Your cart is empty.", "error");
+        return;
+      }
+      toggleCartDrawer(false);
+
+      const totalVal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      document.getElementById("checkoutAmount").textContent = `₹${totalVal.toLocaleString('en-IN')}`;
+      document.getElementById("cfOrderId").textContent = `CF_${Date.now().toString().slice(-6)}`;
+
+      openModal("checkoutModal");
+    }
+
+    function executePayment() {
+      const btn = document.getElementById("btnConfirmPay");
+      const orderId = document.getElementById("cfOrderId").textContent;
+      const amount = document.getElementById("checkoutAmount").textContent;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing Cashfree Gateway...`;
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Pay via Cashfree API`;
+        closeModal("checkoutModal");
+
+        // Clear cart
+        cart = [];
+        updateCartDisplay();
+
+        // Show receipt
+        document.getElementById("receiptTxn").textContent = `${orderId}_SUCCESS`;
+        document.getElementById("receiptAmount").textContent = amount;
+        document.getElementById("receiptLoc").textContent = `${currentAddress.city} (${currentAddress.pincode})`;
+
+        openModal("orderSuccessModal");
+      }, 1400);
+    }
+
+    // MODAL HELPERS
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) {
+        m.classList.remove("hidden");
+        m.classList.add("flex");
+      }
+    }
+
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) {
+        m.classList.add("hidden");
+        m.classList.remove("flex");
+      }
+    }
+
+    // TOAST NOTIFICATIONS
+    function showToast(message, type = "info") {
+      const toast = document.getElementById("toastNotification");
+      const text = document.getElementById("toastMessage");
+      const icon = document.getElementById("toastIcon");
+
+      if (!toast || !text) return;
+
+      text.textContent = message;
+      if (type === "success") {
+        icon.className = "fa-solid fa-circle-check text-emerald-400 text-base";
+      } else if (type === "error") {
+        icon.className = "fa-solid fa-circle-exclamation text-rose-400 text-base";
+      } else {
+        icon.className = "fa-solid fa-circle-info text-amber-400 text-base";
+      }
+
+      toast.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
+      setTimeout(() => {
+        toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+      }, 3500);
+    }
+
+    // Initialize when DOM is ready
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
